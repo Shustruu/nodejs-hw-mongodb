@@ -1,15 +1,17 @@
-const cookieParser = require('cookie-parser');
-const express = require('express');
-const pino = require('pino-http');
-const cors = require('cors');
-const router = require('./routers/index');
-const { getEnvVar } = require('./utils/getEnvVar');
-const { errorHandler } = require('./middlewares/errorHandler');
-const { notFoundHandler } = require('./middlewares/notFoundHandler');
+// src/server.js
+
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import pino from 'pino-http';
+import cors from 'cors';
+import router from './routers/index.js';
+import { getEnvVar } from './utils/getEnvVar.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 const PORT = Number(getEnvVar('PORT', '3000'));
 
-const setupServer = () => {
+export const setupServer = () => {
     const app = express();
 
     app.use(express.json());
@@ -24,6 +26,7 @@ const setupServer = () => {
     );
 
     app.use(cookieParser());
+
 
     app.get('/', (req, res) => {
         res.json({
@@ -41,5 +44,3 @@ const setupServer = () => {
         console.log(`Server is running on port ${PORT}`);
     });
 };
-
-module.exports = { setupServer };
