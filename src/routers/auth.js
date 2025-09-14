@@ -1,29 +1,20 @@
-// src/routers/auth.js
+const express = require('express');
+const router = express.Router();
+const ctrlWrapper = require('../utils/ctrlWrapper');
+const { validateBody } = require('../middlewares/validateBody');
+const { registerSchema, loginSchema } = require('../utils/authValidationSchemas');
+const { register, login, refresh, logout } = require('../controllers/auth');
 
-import { Router } from 'express';
-import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { registerUserSchema } from '../validation/auth.js';
-import { registerUserController, refreshUserController, logoutController, loginUserController } from '../controllers/auth.js';
-import { validateBody } from '../middlewares/validateBody.js';
-import { loginUserSchema } from '../validation/authSchemas.js';
+// POST /auth/register - реєстрація користувача
+router.post('/register', validateBody(registerSchema), ctrlWrapper(register));
 
-const router = Router();
+// POST /auth/login - логін користувача
+router.post('/login', validateBody(loginSchema), ctrlWrapper(login));
 
-router.post(
-    '/register',
-    validateBody(registerUserSchema),
-    ctrlWrapper(registerUserController),
-);
+// POST /auth/refresh - оновлення токенів
+router.post('/refresh', ctrlWrapper(refresh));
 
-router.post('/login', validateBody(loginUserSchema), loginUserController); // ✅ новий роут
+// POST /auth/logout - вихід користувача
+router.post('/logout', ctrlWrapper(logout));
 
-router.post(
-    '/refresh',
-    ctrlWrapper(refreshUserController),
-);
-
-router.post('/logout', ctrlWrapper(logoutController),);
-
-
-
-export default router;
+module.exports = router;
